@@ -8,7 +8,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @Entity(foreignKeys = @ForeignKey(entity = Product.class, parentColumns = "id", childColumns = "product_id", onDelete =  CASCADE),
         indices = {@Index(value = {"id", "product_id"}, unique = true)})
-public class List_of_buy {
+public class ListOfBuy {
     @PrimaryKey(autoGenerate = true)
     private long id;
     private long product_id;

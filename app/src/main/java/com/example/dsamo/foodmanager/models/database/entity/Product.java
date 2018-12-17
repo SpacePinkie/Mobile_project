@@ -18,6 +18,15 @@ public class Product {
     @ColumnInfo(name = "value_id")
     private int value;
 
+    public Product(){
+    }
+
+    public Product(String n, int t, int v){
+        name = n;
+        type = t;
+        value = v;
+    }
+
     public long getId() {
         return id;
     }
