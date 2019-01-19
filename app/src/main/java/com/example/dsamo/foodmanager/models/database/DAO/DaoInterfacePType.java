@@ -18,11 +18,11 @@ public interface DaoInterfacePType {
     PType getById(int id);
 
     @Insert
-    void insert(PType pt);
+    void insert(PType t);
 
     @Update
-    void update(PType pt);
+    void update(PType t);
 
     @Delete
-    void delete(PType pt);
+    void delete(PType t);
 }

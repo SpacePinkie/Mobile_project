@@ -1,36 +1,34 @@
 package com.example.dsamo.foodmanager;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.dsamo.foodmanager.models.classes.FridgeAdapter;
+import com.example.dsamo.foodmanager.models.classes.ListAdapter;
+import com.example.dsamo.foodmanager.models.database.entity.ItemOfList;
 import com.example.dsamo.foodmanager.models.database.entity.Product;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class FridgeFragment extends Fragment {
-
-    private static final int REQUEST_CODE = 0;
-    private static final String PRODUCT_NAME = "name";
-    private static final String PRODUCT_TYPE = "type";
-    private static final String PRODUCT_MEASUREMENT = "Measurement";
-    private static final String PRODUCT_VALUE = "value";
-    private static final String PRODUCT_IMAGE = "image";
-
-    private  List<Product> products;
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link ListFragment.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ * Use the {@link ListFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class ListFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -42,7 +40,7 @@ public class FridgeFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public FridgeFragment() {
+    public ListFragment() {
         // Required empty public constructor
     }
 
@@ -52,11 +50,11 @@ public class FridgeFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment FridgeFragment.
+     * @return A new instance of fragment ListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static FridgeFragment newInstance(String param1, String param2) {
-        FridgeFragment fragment = new FridgeFragment();
+    public static ListFragment newInstance(String param1, String param2) {
+        ListFragment fragment = new ListFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -77,33 +75,22 @@ public class FridgeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        products = new ArrayList<Product>();
-        products.add(new Product("Хлеб", 1, 2, 1, ""));
-        products.add(new Product("Яйца", 1, 10, 1, ""));
-        products.add(new Product("Молоко", 1, 1, 1, ""));
-        products.add(new Product("Сыр", 1, 1, 1, ""));
-        for(int i = 4; i < 24; i++) {
-            products.add(new Product());
-            products.get(i).setName("колбаса " + i);
-        }
-        RecyclerView mRecyclerView;
-        RecyclerView.Adapter mAdapter;
-        RecyclerView.LayoutManager mlayoutManager;
-        View v = inflater.inflate(R.layout.fragment_fridge, container, false);
-        mRecyclerView = (RecyclerView) v.findViewById(R.id.list_of_products);
-        mlayoutManager = new GridLayoutManager(getActivity(),3);
-        mRecyclerView.setLayoutManager(mlayoutManager);
-        mAdapter = new FridgeAdapter(products, new FridgeAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Product item) {
-                FragmentManager fm = getFragmentManager();
-                DataProductFragment dialog = DataProductFragment.newInstance(item);
-                dialog.setTargetFragment(FridgeFragment.this, REQUEST_CODE);
-                dialog.show(fm, "me");
-
-            }
-        });//TODO передать сюда продукты
-        mRecyclerView.setAdapter(mAdapter);
+        View v = inflater.inflate(R.layout.fragment_list, container, false);
+        List<ItemOfList> ps = new ArrayList<ItemOfList>();
+        ps.add(new ItemOfList("Хлеб", ""));
+        ps.add(new ItemOfList("Укроп", ""));
+        ps.add(new ItemOfList("сосиски", ""));
+        ps.add(new ItemOfList("Соль", ""));
+        for(int i = 4; i < 16; i++)
+            ps.add(new ItemOfList("Колбаска" + 1, ""));
+        RecyclerView recyclerView;
+        RecyclerView.Adapter adapter;
+        RecyclerView.LayoutManager layoutManager;
+        recyclerView = (RecyclerView) v.findViewById(R.id.list_of_buying);
+        layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new ListAdapter(ps);//TODO передать сюда продукты
+        recyclerView.setAdapter(adapter);
         return v;
     }
 
@@ -144,26 +131,5 @@ public class FridgeFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode != Activity.RESULT_OK) {
-            return;
-        }
-        if(requestCode == REQUEST_CODE){
-            Product p = new Product();
-            p.setName((String) data.getSerializableExtra(PRODUCT_NAME));
-            p.setValue((int) data.getSerializableExtra(PRODUCT_VALUE));
-            p.setMeasurement((int) data.getSerializableExtra(PRODUCT_MEASUREMENT));
-            p.setImage((String) data.getSerializableExtra(PRODUCT_IMAGE));
-            p.setType((int) data.getSerializableExtra(PRODUCT_TYPE));
-            for(int i = 0; i < products.size(); i++){
-                if(products.get(i).getName().equals(p.getName())){
-                    products.get(i).setValue(p.getValue());
-                    products.get(i).setMeasurement(p.getMeasurement());
-                }
-            }
-        }
     }
 }

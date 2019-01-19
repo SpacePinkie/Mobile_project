@@ -5,28 +5,28 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 @Entity
-public class PType {
-    @PrimaryKey
-    private int id;
+public class Fridge {
+    @PrimaryKey(autoGenerate = true)
+    private long id;
     private String name;
 
-    public PType(){}
+    public Fridge(){}
     @Ignore
-    public PType(String name){this.name = name;}
+    public Fridge(String name){this.name = name;}
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public String getName() {
+    public String getName(){
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(String name){
         this.name = name;
     }
 }

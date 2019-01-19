@@ -6,24 +6,24 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
-import com.example.dsamo.foodmanager.models.database.entity.ListOfBuy;
+import com.example.dsamo.foodmanager.models.database.entity.Fridge;
 
 import java.util.List;
-
 @Dao
-public interface DaoInterfaceList_of_buy {
-    @Query("SELECT *FROM ListOfBuy")
-    List<ListOfBuy> getAll();
+public interface DaoInterfaceFridge {
+
+    @Query("SELECT *FROM fridge")
+    List<Fridge> getAll();
+
+    @Query("SELECT *FROM fridge WHERE id = :id")
+    Fridge getById(long id);
 
     @Insert
-    long insertWithId(ListOfBuy l);
-
-    @Insert
-    void insert(ListOfBuy l);
+    void insert(Fridge f);
 
     @Update
-    void update(ListOfBuy l);
+    void update(Fridge f);
 
     @Delete
-    void delete(ListOfBuy l);
+    void delete(Fridge f);
 }

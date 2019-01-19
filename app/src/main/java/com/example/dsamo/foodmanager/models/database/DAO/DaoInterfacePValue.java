@@ -5,23 +5,23 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
-import com.example.dsamo.foodmanager.models.database.entity.Value;
+import com.example.dsamo.foodmanager.models.database.entity.PValue;
 import java.util.List;
 
 @Dao
-public interface DaoInterfaceValue {
-    @Query("SELECT *FROM value")
-    List<Value> getAll();
+public interface DaoInterfacePValue {
+    @Query("SELECT *FROM pvalue")
+    List<PValue> getAll();
 
-    @Query("SELECT *FROM value WHERE id = :id")
-    Value getById(int id);
+    @Query("SELECT *FROM pvalue WHERE id = :id")
+    PValue getById(int id);
 
     @Insert
-    void insert(Value v);
+    void insert(PValue v);
 
     @Update
-    void update(Value v);
+    void update(PValue v);
 
     @Delete
-    void delete(Value v);
+    void delete(PValue v);
 }
