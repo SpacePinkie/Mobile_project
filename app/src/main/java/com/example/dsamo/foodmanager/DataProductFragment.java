@@ -32,6 +32,7 @@ public class DataProductFragment extends DialogFragment {
     private TextView value_text;
     private EditText edit_value_text;
     private LinearLayout btn_tool_layout;
+    private TextView measurement_text;
     private Button btn_plus;
     private Button btn_minus;
 
@@ -46,10 +47,13 @@ public class DataProductFragment extends DialogFragment {
         product.setValue((int) getArguments().getSerializable(PRODUCT_VALUE));
 
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.data_product_dialog, null);
+        measurement_text = (TextView) v.findViewById(R.id.text_measurement);
         btn_tool_layout = (LinearLayout) v.findViewById(R.id.btn_tool);
         btn_plus = (Button) v.findViewById(R.id.btn_plus);
         btn_minus = (Button) v.findViewById(R.id.btn_minus);
         value_text = (TextView) v.findViewById(R.id.text_value);
+        measurement_text.setText(App.getInstance().getDatabase().
+                daoInterfacePMeasurement().getById(product.getMeasurement()).getName());
         value_text.setText("" + product.getValue());
         edit_value_text = (EditText) v.findViewById(R.id.input_value);
         edit_value_text.setVisibility(View.GONE);

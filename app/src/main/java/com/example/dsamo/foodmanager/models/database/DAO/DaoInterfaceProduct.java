@@ -19,10 +19,10 @@ public interface DaoInterfaceProduct {
     Product getById(long id);
 
     @Insert
-    long insertWithId(Product p);
+    long[] insert(List<Product> lP);
 
     @Insert
-    void insert(Product p);
+    long insert(Product p);
 
     @Update
     void update(Product p);

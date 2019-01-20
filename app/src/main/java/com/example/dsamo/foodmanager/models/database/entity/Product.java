@@ -9,9 +9,8 @@ import android.arch.persistence.room.PrimaryKey;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
-@Entity(indices = {@Index("value_id"), @Index("type_id"), @Index("measurement_id")},
+@Entity(indices = {@Index("type_id"), @Index("measurement_id")},
         foreignKeys = {@ForeignKey(entity = PType.class, parentColumns = "id", childColumns = "type_id", onDelete =  CASCADE),
-        @ForeignKey(entity = PValue.class, parentColumns = "id", childColumns = "value_id", onDelete =  CASCADE),
         @ForeignKey(entity = PMeasurement.class, parentColumns = "id", childColumns = "measurement_id", onDelete =  CASCADE)})
 public class Product {
     @PrimaryKey(autoGenerate = true)
@@ -19,7 +18,6 @@ public class Product {
     private String name;
     @ColumnInfo(name = "measurement_id")
     private int measurement;
-    @ColumnInfo(name = "value_id")
     private int value;
     @ColumnInfo(name = "type_id")
     private int type;

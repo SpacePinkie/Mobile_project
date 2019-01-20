@@ -19,7 +19,10 @@ public interface DaoInterfacePMeasurement {
     PMeasurement getById(long id);
 
     @Insert
-    void insert(PMeasurement m);
+    long[] insert(List<PMeasurement> lM);
+
+    @Insert
+    long insert(PMeasurement m);
 
     @Update
     void update(PMeasurement m);

@@ -19,7 +19,7 @@ import android.view.MenuItem;
 
 public class FridgeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
+    private static final int REQUEST_CODE = 1;
     Fragment fragmentFridge;
     Fragment fragmentList;
     Fragment atThisTimeFragment;
@@ -60,6 +60,7 @@ public class FridgeActivity extends AppCompatActivity
                             .setAction("Action", null).show();
                     fragmentManager = getSupportFragmentManager();
                     CreateProductFragment dialog = new CreateProductFragment();
+                    dialog.setTargetFragment(atThisTimeFragment, REQUEST_CODE);
                     dialog.show(fragmentManager, "me");
                 }
             });
@@ -118,6 +119,7 @@ public class FridgeActivity extends AppCompatActivity
                                 .setAction("Action", null).show();
                         fragmentManager = getSupportFragmentManager();
                         CreateProductFragment dialog = new CreateProductFragment();
+                        dialog.setTargetFragment(atThisTimeFragment, REQUEST_CODE);
                         dialog.show(fragmentManager, "me");
                     }
                 });
@@ -136,6 +138,7 @@ public class FridgeActivity extends AppCompatActivity
                                 .setAction("Action", null).show();
                         fragmentManager = getSupportFragmentManager();
                         CreateListItemFragment dialog = new CreateListItemFragment();
+                        dialog.setTargetFragment(atThisTimeFragment, REQUEST_CODE);
                         dialog.show(fragmentManager, "me");
                     }
                 });

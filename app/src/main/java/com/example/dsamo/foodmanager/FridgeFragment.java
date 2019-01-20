@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.dsamo.foodmanager.models.classes.FridgeAdapter;
+import com.example.dsamo.foodmanager.models.database.entity.Fridge;
 import com.example.dsamo.foodmanager.models.database.entity.Product;
 
 import java.util.ArrayList;
@@ -24,11 +27,18 @@ import java.util.List;
 public class FridgeFragment extends Fragment {
 
     private static final int REQUEST_CODE = 0;
+    private static final int REQUEST_CODE_2 = 1;
     private static final String PRODUCT_NAME = "name";
     private static final String PRODUCT_TYPE = "type";
     private static final String PRODUCT_MEASUREMENT = "Measurement";
     private static final String PRODUCT_VALUE = "value";
     private static final String PRODUCT_IMAGE = "image";
+
+    private RecyclerView mRecyclerView;
+    private FridgeAdapter mAdapter;
+    private RecyclerView.LayoutManager mlayoutManager;
+    private int targetItem;
+
 
     private  List<Product> products;
     // TODO: Rename parameter arguments, choose names that match
@@ -74,24 +84,20 @@ public class FridgeFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        products = new ArrayList<Product>();
-        products.add(new Product("Хлеб", 1, 2, 1, ""));
-        products.add(new Product("Яйца", 1, 10, 1, ""));
-        products.add(new Product("Молоко", 1, 1, 1, ""));
-        products.add(new Product("Сыр", 1, 1, 1, ""));
-        for(int i = 4; i < 24; i++) {
-            products.add(new Product());
-            products.get(i).setName("колбаса " + i);
-        }
-        RecyclerView mRecyclerView;
-        RecyclerView.Adapter mAdapter;
-        RecyclerView.LayoutManager mlayoutManager;
         View v = inflater.inflate(R.layout.fragment_fridge, container, false);
+        products = App.getInstance().getDatabase().daoInterfaceProduct().getAll();
         mRecyclerView = (RecyclerView) v.findViewById(R.id.list_of_products);
         mlayoutManager = new GridLayoutManager(getActivity(),3);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(mlayoutManager);
         mAdapter = new FridgeAdapter(products, new FridgeAdapter.OnItemClickListener() {
             @Override
@@ -101,6 +107,13 @@ public class FridgeFragment extends Fragment {
                 dialog.setTargetFragment(FridgeFragment.this, REQUEST_CODE);
                 dialog.show(fm, "me");
 
+            }
+
+            @Override
+            public void onLongItemClick(Product item) {
+                products.remove(item);
+                App.getInstance().getDatabase().daoInterfaceProduct().delete(item);
+                mAdapter.notifyDataSetChanged();
             }
         });//TODO передать сюда продукты
         mRecyclerView.setAdapter(mAdapter);
@@ -164,6 +177,20 @@ public class FridgeFragment extends Fragment {
                     products.get(i).setMeasurement(p.getMeasurement());
                 }
             }
+            App.getInstance().getDatabase().daoInterfaceProduct().update(p);
+            mAdapter.notifyItemChanged(mAdapter.getTargetPosition());
+        }
+        if(requestCode == REQUEST_CODE_2){
+            Product p = new Product();
+            p.setName((String) data.getSerializableExtra(PRODUCT_NAME));
+            p.setValue((int) data.getSerializableExtra(PRODUCT_VALUE));
+            p.setMeasurement((int) data.getSerializableExtra(PRODUCT_MEASUREMENT));
+            p.setImage((String) data.getSerializableExtra(PRODUCT_IMAGE));
+            p.setType((int) data.getSerializableExtra(PRODUCT_TYPE));
+            products.add(p);
+            long id = App.getInstance().getDatabase().daoInterfaceProduct().insert(p);
+            p.setId(id);
+            mAdapter.notifyDataSetChanged();
         }
     }
 }

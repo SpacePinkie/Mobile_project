@@ -2,6 +2,7 @@ package com.example.dsamo.foodmanager.models.classes;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.sip.SipSession;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,27 +19,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.MyViewHolder> {
-    private static final int IMAGE_COUNT = 15;
+    private static final int IMAGE_COUNT = 19;
     private List<String> image_fileName;
+    private ImageClickListener mImageClickListener;
+
+    public interface ImageClickListener{
+        public void onImageClick(String fileName);
+    }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener{
         ImageView mImage;
         ViewGroup mParent;
-        public MyViewHolder(View v, ViewGroup parent){
+        ImageClickListener mImageClickListener;
+        String name;
+        public MyViewHolder(View v, ViewGroup parent, ImageClickListener adapterListener){
             super(v);
+            this.mImageClickListener = adapterListener;
             mParent = parent;
             mImage = (ImageView) v.findViewById(R.id.image_choose_item);
+            mImage.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            mImage.setAlpha(0.5f);
-            //Toast.makeText(view.getContext(), "Я картинка: " + getPosition(), Toast.LENGTH_SHORT).show();
+            if(mImageClickListener != null){
+                mImageClickListener.onImageClick(this.name);
+            }
         }
+
     }
 
-    public ImageAdapter(){
+    public ImageAdapter(ImageAdapter.ImageClickListener listener){
+        this.mImageClickListener = listener;
         image_fileName = new ArrayList<String>();
         for(int i = 0; i < IMAGE_COUNT; i++){
             if(i < 10) {
@@ -58,7 +71,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.MyViewHolder
     @Override
     public ImageAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_item, parent, false);
-        final ImageAdapter.MyViewHolder vH = new ImageAdapter.MyViewHolder(v, parent);
+        final ImageAdapter.MyViewHolder vH = new ImageAdapter.MyViewHolder(v, parent, mImageClickListener);
         return vH;
     }
 
@@ -68,6 +81,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.MyViewHolder
         int resID = holder.mParent.getContext().getResources().getIdentifier(image_fileName.get(position),
                 "drawable", holder.mParent.getContext().getPackageName());
         holder.mImage.setImageResource(resID);
+        holder.name = image_fileName.get(position);
     }
 
     @Override
