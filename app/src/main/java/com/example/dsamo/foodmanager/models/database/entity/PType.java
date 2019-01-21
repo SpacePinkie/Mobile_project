@@ -7,18 +7,18 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity
 public class PType {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private long id;
     private String name;
 
     public PType(){}
     @Ignore
     public PType(String name){this.name = name;}
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

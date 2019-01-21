@@ -19,7 +19,7 @@ public interface DaoInterfaceFridge {
     Fridge getById(long id);
 
     @Insert
-    void insert(Fridge f);
+    long insert(Fridge f);
 
     @Update
     void update(Fridge f);

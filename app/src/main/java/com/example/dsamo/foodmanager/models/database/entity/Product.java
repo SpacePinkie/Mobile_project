@@ -17,10 +17,10 @@ public class Product {
     private long id;
     private String name;
     @ColumnInfo(name = "measurement_id")
-    private int measurement;
+    private long measurement;
     private int value;
     @ColumnInfo(name = "type_id")
-    private int type;
+    private long type;
     private String image;
 
     public Product(){
@@ -54,11 +54,11 @@ public class Product {
         this.name = name;
     }
 
-    public int getType() {
+    public long getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(long type) {
         this.type = type;
     }
 
@@ -70,7 +70,7 @@ public class Product {
         this.value = value;
     }
 
-    public int getMeasurement() { return measurement; }
+    public long getMeasurement() { return measurement; }
 
-    public void setMeasurement(int measurement) { this.measurement = measurement; }
+    public void setMeasurement(long measurement) { this.measurement = measurement; }
 }

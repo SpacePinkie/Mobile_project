@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,15 +23,34 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewholder> 
         TextView mListProductName;
         ImageView mListProductImage;
         CheckBox mListCheckBox;
-        public MyViewholder(View v){
+        ViewGroup mParent;
+        private onCheckedListener mOnCheckedListener;
+        public MyViewholder(View v, ViewGroup parent, onCheckedListener listener){
             super(v);
+            mOnCheckedListener = listener;
+            this.mParent = parent;
             mListProductName = v.findViewById(R.id.list_product_name);
             mListProductImage = v.findViewById(R.id.list_product_img);
             mListCheckBox = v.findViewById(R.id.list_checkBox);
+            mListCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    if(b)
+                        mOnCheckedListener.onChecked(getLayoutPosition());
+                }
+            });
+        }
+
+        public interface onCheckedListener{
+            public void onChecked(int item);
         }
     }
 
-    public ListAdapter(List<ItemOfList> myProducts){
+
+    private MyViewholder.onCheckedListener mOnCheckedListener;
+
+    public ListAdapter(List<ItemOfList> myProducts, MyViewholder.onCheckedListener listener){
+        mOnCheckedListener = listener;
         mProducts = myProducts;
     }
 
@@ -38,15 +58,17 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewholder> 
     @Override
     public ListAdapter.MyViewholder onCreateViewHolder(ViewGroup parent, int viewType){
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
-        ListAdapter.MyViewholder vH = new ListAdapter.MyViewholder(v);
+        final ListAdapter.MyViewholder vH = new ListAdapter.MyViewholder(v, parent, mOnCheckedListener);
         return vH;
     }
 
     @NonNull
     @Override
     public void onBindViewHolder(ListAdapter.MyViewholder holder, int position){
-        holder.mListProductName.setText(mProducts.get(position).getText()); //
-        holder.mListProductImage.setImageResource(R.drawable.ic_menu_camera); //mProducts[position].getImage()
+        holder.mListProductName.setText(mProducts.get(position).getText());
+        int id = holder.mParent.getContext().getResources()
+                .getIdentifier(mProducts.get(position).getImage(), "drawable", holder.mParent.getContext().getPackageName());
+        holder.mListProductImage.setImageResource(id);
         holder.mListCheckBox.setChecked(mProducts.get(position).getChecked());
     }
 

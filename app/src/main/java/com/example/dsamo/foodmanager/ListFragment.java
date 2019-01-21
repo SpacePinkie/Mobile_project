@@ -1,6 +1,8 @@
 package com.example.dsamo.foodmanager;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -33,6 +35,14 @@ public class ListFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final int REQUEST_CODE = 1;
+    private static final String TARGET_NAME = "target_name";
+    private static final String TARGET_IMAGE = "target_image";
+
+    List<ItemOfList> listOfProducts;
+    RecyclerView recyclerView;
+    ListAdapter adapter;
+    RecyclerView.LayoutManager layoutManager;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -43,15 +53,6 @@ public class ListFragment extends Fragment {
     public ListFragment() {
         // Required empty public constructor
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ListFragment.
-     */
     // TODO: Rename and change types and number of parameters
     public static ListFragment newInstance(String param1, String param2) {
         ListFragment fragment = new ListFragment();
@@ -76,20 +77,18 @@ public class ListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_list, container, false);
-        List<ItemOfList> ps = new ArrayList<ItemOfList>();
-        ps.add(new ItemOfList("Хлеб", ""));
-        ps.add(new ItemOfList("Укроп", ""));
-        ps.add(new ItemOfList("сосиски", ""));
-        ps.add(new ItemOfList("Соль", ""));
-        for(int i = 4; i < 16; i++)
-            ps.add(new ItemOfList("Колбаска" + 1, ""));
-        RecyclerView recyclerView;
-        RecyclerView.Adapter adapter;
-        RecyclerView.LayoutManager layoutManager;
+        listOfProducts = App.getInstance().getDatabase().daoInterfaceItemOfList().getAll();
         recyclerView = (RecyclerView) v.findViewById(R.id.list_of_buying);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new ListAdapter(ps);//TODO передать сюда продукты
+        adapter = new ListAdapter(listOfProducts, new ListAdapter.MyViewholder.onCheckedListener() {
+            @Override
+            public void onChecked(int item) {
+                App.getInstance().getDatabase().daoInterfaceItemOfList().delete(listOfProducts.get(item));
+                listOfProducts.remove(item);
+                adapter.notifyDataSetChanged();
+            }
+        });
         recyclerView.setAdapter(adapter);
         return v;
     }
@@ -131,5 +130,21 @@ public class ListFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode != Activity.RESULT_OK){
+            return;
+        }
+        if(requestCode == REQUEST_CODE){
+            ItemOfList item = new ItemOfList();
+            item.setText((String) data.getSerializableExtra(TARGET_NAME));
+            item.setImage((String) data.getSerializableExtra(TARGET_IMAGE));
+            long id = App.getInstance().getDatabase().daoInterfaceItemOfList().insert(item);
+            item.setId(id);
+            listOfProducts.add(item);
+            adapter.notifyDataSetChanged();
+        }
     }
 }

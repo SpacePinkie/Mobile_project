@@ -11,7 +11,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 @Entity
 public class ItemOfList {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private long id;
     private String text;
     private String image;
     private Boolean Checked;
@@ -24,11 +24,11 @@ public class ItemOfList {
         this.text = text;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

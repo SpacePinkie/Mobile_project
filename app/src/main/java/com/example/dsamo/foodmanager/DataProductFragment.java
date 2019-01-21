@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,6 +23,7 @@ import com.example.dsamo.foodmanager.models.database.entity.Product;
 
 public class DataProductFragment extends DialogFragment {
     private static final String PRODUCT_NAME = "name";
+    private static final String PRODUCT_ID = "id";
     private static final String PRODUCT_TYPE = "type";
     private static final String PRODUCT_MEASUREMENT = "Measurement";
     private static final String PRODUCT_VALUE = "value";
@@ -35,14 +37,16 @@ public class DataProductFragment extends DialogFragment {
     private TextView measurement_text;
     private Button btn_plus;
     private Button btn_minus;
+    private ImageView image;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         product = new Product();
+        product.setId((long) getArguments().getSerializable(PRODUCT_ID));
         product.setName((String) getArguments().getSerializable(PRODUCT_NAME));
-        product.setType((int) getArguments().getSerializable(PRODUCT_TYPE));
-        product.setMeasurement((int) getArguments().getSerializable(PRODUCT_MEASUREMENT));
+        product.setType((long) getArguments().getSerializable(PRODUCT_TYPE));
+        product.setMeasurement((long) getArguments().getSerializable(PRODUCT_MEASUREMENT));
         product.setImage((String) getArguments().getSerializable(PRODUCT_IMAGE));
         product.setValue((int) getArguments().getSerializable(PRODUCT_VALUE));
 
@@ -52,6 +56,7 @@ public class DataProductFragment extends DialogFragment {
         btn_plus = (Button) v.findViewById(R.id.btn_plus);
         btn_minus = (Button) v.findViewById(R.id.btn_minus);
         value_text = (TextView) v.findViewById(R.id.text_value);
+        image = (ImageView) v.findViewById(R.id.data_image);
         measurement_text.setText(App.getInstance().getDatabase().
                 daoInterfacePMeasurement().getById(product.getMeasurement()).getName());
         value_text.setText("" + product.getValue());
@@ -90,6 +95,8 @@ public class DataProductFragment extends DialogFragment {
                 value_text.setText("" + (Integer.parseInt(value_text.getText().toString()) + 1));
             }
         });
+        int id = getContext().getResources().getIdentifier(product.getImage(), "drawable", getContext().getPackageName());
+        image.setImageResource(id);
 
         return new android.support.v7.app.AlertDialog.Builder(getActivity())
                 .setView(v)
@@ -98,7 +105,7 @@ public class DataProductFragment extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         product.setValue(Integer.parseInt(value_text.getText().toString()));
-                        sendResult(Activity.RESULT_OK, product.getName(),product.getImage(), product.getValue(),
+                        sendResult(Activity.RESULT_OK, product.getId(), product.getName(),product.getImage(), product.getValue(),
                                 product.getType(), product.getMeasurement());
                     }
                 })
@@ -113,6 +120,7 @@ public class DataProductFragment extends DialogFragment {
     }
     public static DataProductFragment newInstance(Product p){
         Bundle product = new Bundle();
+        product.putSerializable(PRODUCT_ID, p.getId());
         product.putSerializable(PRODUCT_NAME, p.getName());
         product.putSerializable(PRODUCT_IMAGE, p.getImage());
         product.putSerializable(PRODUCT_MEASUREMENT, p.getMeasurement());
@@ -123,13 +131,14 @@ public class DataProductFragment extends DialogFragment {
         return mDataProductFragment;
     }
 
-    private void sendResult(int resultCode, String product_name, String product_image,
-                            int product_value, int product_type, int product_measurement){
+    private void sendResult(int resultCode, long product_id, String product_name, String product_image,
+                            int product_value, long product_type, long product_measurement){
         if(getTargetFragment() == null) {
             return;
         }
         else{
             Intent intent = new Intent();
+            intent.putExtra(PRODUCT_ID, product_id);
             intent.putExtra(PRODUCT_NAME, product_name);
             intent.putExtra(PRODUCT_IMAGE, product_image);
             intent.putExtra(PRODUCT_VALUE, product_value);

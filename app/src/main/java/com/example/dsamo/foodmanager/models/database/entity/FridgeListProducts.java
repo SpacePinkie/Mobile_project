@@ -12,24 +12,24 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
         foreignKeys = {@ForeignKey(entity = Fridge.class, parentColumns = "id", childColumns = "fridge_id", onDelete =  CASCADE),
         @ForeignKey(entity = Product.class, parentColumns = "id", childColumns = "product_id", onDelete =  CASCADE)})
 public class FridgeListProducts {
-    private int fridge_id;
-    private int product_id;
+    private long fridge_id;
+    private long product_id;
 
     public FridgeListProducts(){}
 
-    public int getFridge_id() {
+    public long getFridge_id() {
         return fridge_id;
     }
 
-    public void setFridge_id(int fridge_id) {
+    public void setFridge_id(long fridge_id) {
         this.fridge_id = fridge_id;
     }
 
-    public int getProduct_id() {
+    public long getProduct_id() {
         return product_id;
     }
 
-    public void setProduct_id(int product_id) {
+    public void setProduct_id(long product_id) {
         this.product_id = product_id;
     }
 }

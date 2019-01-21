@@ -18,10 +18,10 @@ public interface DaoInterfacePType {
     PType getById(int id);
 
     @Insert
-    void insert(List<PType> lT);
+    long[] insert(List<PType> lT);
 
     @Insert
-    void insert(PType t);
+    long insert(PType t);
 
     @Update
     void update(PType t);

@@ -14,7 +14,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
         foreignKeys = {@ForeignKey(entity = Fridge.class, parentColumns = "id", childColumns = "fridge_id", onDelete =  CASCADE)})
 public class User {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private long id;
     @ColumnInfo(name = "fridge_id")
     private int fridge;
     private String user_password;
@@ -28,11 +28,11 @@ public class User {
         this.user_password = password;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

@@ -81,11 +81,11 @@ public class CreateProductFragment extends DialogFragment {
                         if(!productName.equals("")){
                             if(targetImageName != null){
                                 int productValue = 0;
-                                int productType = 0;
+                                long productType = 0;
                                 for(int g = 0; g < pType.size(); g++)
                                     if(pType.get(g).getName().equals(choose_type.getSelectedItem().toString()))
                                         productType = pType.get(g).getId();//TODO returned
-                                int productMeasurement = 0;
+                                long productMeasurement = 0;
                                 for(int g = 0; g < pMeasurements.size(); g++)
                                     if(pMeasurements.get(g).getName().equals(choose_measurement.getSelectedItem().toString()))
                                         productMeasurement = pMeasurements.get(g).getId();
@@ -99,7 +99,7 @@ public class CreateProductFragment extends DialogFragment {
     }
 
     private void sendResult(int resultCode, String product_name, String product_image,
-                            int product_value, int product_type, int product_measurement){
+                            int product_value, long product_type, long product_measurement){
         if(getTargetFragment() == null) {
             return;
         }

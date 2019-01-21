@@ -19,7 +19,7 @@ public interface DaoInterfaceUser {
     User getById(int id);
 
     @Insert
-    void insert(User u);
+    long insert(User u);
 
     @Update
     void update(User u);

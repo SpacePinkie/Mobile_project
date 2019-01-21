@@ -7,18 +7,18 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity
 public class Fridge {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private long id;
     private String name;
 
     public Fridge(){}
     @Ignore
     public Fridge(String name){this.name = name;}
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

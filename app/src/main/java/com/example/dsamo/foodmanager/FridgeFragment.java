@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.example.dsamo.foodmanager.models.classes.FridgeAdapter;
 import com.example.dsamo.foodmanager.models.database.entity.Fridge;
+import com.example.dsamo.foodmanager.models.database.entity.ItemOfList;
 import com.example.dsamo.foodmanager.models.database.entity.Product;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class FridgeFragment extends Fragment {
     private static final String PRODUCT_MEASUREMENT = "Measurement";
     private static final String PRODUCT_VALUE = "value";
     private static final String PRODUCT_IMAGE = "image";
+    private static final String PRODUCT_ID = "id";
 
     private RecyclerView mRecyclerView;
     private FridgeAdapter mAdapter;
@@ -99,23 +101,22 @@ public class FridgeFragment extends Fragment {
         mlayoutManager = new GridLayoutManager(getActivity(),3);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(mlayoutManager);
-        mAdapter = new FridgeAdapter(products, new FridgeAdapter.OnItemClickListener() {
+        mAdapter = new FridgeAdapter(products, new FridgeAdapter.ItemClickListener(){
             @Override
-            public void onItemClick(Product item) {
+            public void onItemClick(int item) {
                 FragmentManager fm = getFragmentManager();
-                DataProductFragment dialog = DataProductFragment.newInstance(item);
+                DataProductFragment dialog = DataProductFragment.newInstance(products.get(item));
                 dialog.setTargetFragment(FridgeFragment.this, REQUEST_CODE);
                 dialog.show(fm, "me");
-
             }
 
             @Override
-            public void onLongItemClick(Product item) {
+            public void onLongItemClick(int item) {
+                App.getInstance().getDatabase().daoInterfaceProduct().delete(products.get(item));
                 products.remove(item);
-                App.getInstance().getDatabase().daoInterfaceProduct().delete(item);
                 mAdapter.notifyDataSetChanged();
             }
-        });//TODO передать сюда продукты
+        });
         mRecyclerView.setAdapter(mAdapter);
         return v;
     }
@@ -166,27 +167,34 @@ public class FridgeFragment extends Fragment {
         }
         if(requestCode == REQUEST_CODE){
             Product p = new Product();
+            int pos = 0;
+            p.setId((long) data.getSerializableExtra(PRODUCT_ID));
             p.setName((String) data.getSerializableExtra(PRODUCT_NAME));
             p.setValue((int) data.getSerializableExtra(PRODUCT_VALUE));
-            p.setMeasurement((int) data.getSerializableExtra(PRODUCT_MEASUREMENT));
+            p.setMeasurement((long) data.getSerializableExtra(PRODUCT_MEASUREMENT));
             p.setImage((String) data.getSerializableExtra(PRODUCT_IMAGE));
-            p.setType((int) data.getSerializableExtra(PRODUCT_TYPE));
+            p.setType((long) data.getSerializableExtra(PRODUCT_TYPE));
             for(int i = 0; i < products.size(); i++){
                 if(products.get(i).getName().equals(p.getName())){
+                    pos = i;
                     products.get(i).setValue(p.getValue());
                     products.get(i).setMeasurement(p.getMeasurement());
                 }
             }
             App.getInstance().getDatabase().daoInterfaceProduct().update(p);
             mAdapter.notifyItemChanged(mAdapter.getTargetPosition());
+            if(p.getValue() == 0 && p.getValue() == products.get(pos).getValue()){
+                App.getInstance().getDatabase().daoInterfaceItemOfList()
+                        .insert(new ItemOfList(p.getName(), p.getImage()));
+            }
         }
         if(requestCode == REQUEST_CODE_2){
             Product p = new Product();
             p.setName((String) data.getSerializableExtra(PRODUCT_NAME));
             p.setValue((int) data.getSerializableExtra(PRODUCT_VALUE));
-            p.setMeasurement((int) data.getSerializableExtra(PRODUCT_MEASUREMENT));
+            p.setMeasurement((long) data.getSerializableExtra(PRODUCT_MEASUREMENT));
             p.setImage((String) data.getSerializableExtra(PRODUCT_IMAGE));
-            p.setType((int) data.getSerializableExtra(PRODUCT_TYPE));
+            p.setType((long) data.getSerializableExtra(PRODUCT_TYPE));
             products.add(p);
             long id = App.getInstance().getDatabase().daoInterfaceProduct().insert(p);
             p.setId(id);

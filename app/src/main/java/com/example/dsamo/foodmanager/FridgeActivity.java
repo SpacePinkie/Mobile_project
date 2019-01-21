@@ -1,5 +1,6 @@
 package com.example.dsamo.foodmanager;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -32,9 +33,8 @@ public class FridgeActivity extends AppCompatActivity
         setContentView(R.layout.activity_fridge);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        this.setTitle("Ваш холодильник");
         fab = (FloatingActionButton) findViewById(R.id.fab);
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -106,6 +106,7 @@ public class FridgeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
+            this.setTitle("Мой холодильник");
             if(atThisTimeFragment != fragmentFridge) {
                 atThisTimeFragment = fragmentFridge;
                 fragmentManager.beginTransaction()
@@ -125,6 +126,7 @@ public class FridgeActivity extends AppCompatActivity
                 });
             }
         } else if (id == R.id.nav_gallery){
+            this.setTitle("Мой список покупок");
             if(atThisTimeFragment != fragmentList) {
                 atThisTimeFragment = fragmentList;
                 fragmentManager.beginTransaction()

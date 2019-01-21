@@ -19,7 +19,7 @@ public interface DaoInterfaceItemOfList {
     ItemOfList getById(long id);
 
     @Insert
-    void insert(ItemOfList i);
+    long insert(ItemOfList i);
 
     @Update
     void update(ItemOfList i);
